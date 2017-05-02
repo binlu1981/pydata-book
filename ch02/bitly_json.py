@@ -1,6 +1,9 @@
 import json
-path = 'ch02/usagov_bitly_data2012-03-16-1331923249.txt'
+path = 'D:/megasync/research/ngs/GitHub/pydata_book/ch02/usagov_bitly_data2012-03-16-1331923249.txt'
+#read first line
 print open(path).readline()
+
+
 """
 { "a": "Mozilla\/5.0 (Windows NT 6.1; WOW64) AppleWebKit\/535.11 (KHTML, like Gecko) Chrome\/17.0.963.78 Safari\/535.11", "c": "US", "nk": 1, "tz": "America\/New_York", "gr": "MA", "g": "A6qOVH", "h": "wfLQtf", "l": "orofrog", "al": "en-US,en;q=0.8", "hh": "1.usa.gov", "r": "http:\/\/www.facebook.com\/l\/7AQEFzjSi\/1.usa.gov\/wfLQtf", "u": "http:\/\/www.ncbi.nlm.nih.gov\/pubmed\/22415991", "t": 1331923247, "hc": 1331822918, "cy": "Danvers", "ll": [ 42.576698, -70.954903 ] }
 """
@@ -52,4 +55,30 @@ print top_counts1(counts_dict,10)
 """
 [(33, u'America/Sao_Paulo'), (35, u'Europe/Madrid'), (36, u'Pacific/Honolulu'), (37, u'Asia/Tokyo'), (74, u'Europe/London'), (191, u'America/Denver'), (382, u'America/Los_Angeles'), (400, u'America/Chicago'), (521, u''), (1251, u'America/New_York')]
 """
-  
+
+from collections import Counter
+counts = Counter(time_zone)
+print counts.most_common(10)
+
+from pandas import DataFrame, Series
+import pandas as pd; import numpy as np
+frame = DataFrame(records)
+print frame['tz'][:10]
+tz_counts = frame['tz'].value_counts()
+print tz_counts[:10]
+clean_tz = frame['tz'].fillna("Missing")
+clean_tz[clean_tz == ''] = 'Unknown'
+tz_counts = clean_tz.value_counts()
+print tz_counts[:10]
+tz_counts[:10].plot(kind = 'barh', rot =0)
+
+print frame.a[1]
+print frame['a'][1]
+results = [x.split()[0] for x in frame['a'].dropna()]
+print results[:5]
+"""
+print results.value_counts()[:8]
+AttributeError: 'list' object has no attribute 'value_counts'
+"""
+results = Series([x.split()[0] for x in frame['a'].dropna()])
+print results.value_counts()[:8]
