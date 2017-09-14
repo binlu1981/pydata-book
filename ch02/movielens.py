@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# -*- coding = utf-8 -*-
+
 import pandas as pd
 import numpy as np
 unames = ['user_id','gender','age','occupation','zip']
-users = pd.read_table('D:/megasync/research/ngs/GitHub/pydata_book/ch02/movielens/users.dat',sep='::',header=None,names=unames)
+users = pd.read_table('./movielens/users.dat',sep='::',header=None,names=unames)
 #print(users.head())
 """
    user_id gender  age  occupation    zip
@@ -14,7 +14,7 @@ users = pd.read_table('D:/megasync/research/ngs/GitHub/pydata_book/ch02/movielen
 4        5      M   25          20  55455
 """
 rnames = ['user_id','movie_id','rating','timestamp']
-ratings = pd.read_table('D:/megasync/research/ngs/GitHub/pydata_book/ch02/movielens/ratings.dat',sep='::',header=None,names=rnames)
+ratings = pd.read_table('./movielens/ratings.dat',sep='::',header=None,names=rnames)
 #print(ratings.head())
 """
    user_id  movie_id  rating  timestamp
@@ -25,7 +25,7 @@ ratings = pd.read_table('D:/megasync/research/ngs/GitHub/pydata_book/ch02/moviel
 4        1      2355       5  978824291
 """
 mnames = ['movie_id','title','genres']
-movies = pd.read_table('D:/megasync/research/ngs/GitHub/pydata_book/ch02/movielens/movies.dat',sep='::',header=None,names=mnames)
+movies = pd.read_table('./movielens/movies.dat',sep='::',header=None,names=mnames)
 #print(movies[:5])
 """
    movie_id                               title                        genres
@@ -68,9 +68,18 @@ title
 101 Dalmatians (1996)                364
 12 Angry Men (1957)                  616
 """
-#active_titles = ratings_by_title.index[ratings_by_title >= 250]
+active_titles_index = ratings_by_title.index[ratings_by_title >= 250]
 #mean_ratings = mean_ratings.ix[active_titles]
-
+"""
+active_titles_index[:10]
+Out[208]: 
+Index([u''burbs, The (1989)', u'10 Things I Hate About You (1999)',
+       u'101 Dalmatians (1961)', u'101 Dalmatians (1996)',
+       u'12 Angry Men (1957)', u'13th Warrior, The (1999)',
+       u'2 Days in the Valley (1996)', u'20,000 Leagues Under the Sea (1954)',
+       u'2001: A Space Odyssey (1968)', u'2010 (1984)'],
+      dtype='object', name=u'title')
+"""
 #得到一个列表
 print(active_titles.index)
 mean_ratings = mean_ratings.ix[active_titles.index]
@@ -96,3 +105,27 @@ Sunset Blvd. (a.k.a. Sunset Boulevard) (1950)      4.573 4.465
 Wallace & Gromit: The Best of Aardman Animation... 4.563 4.385
 Schindler's List (1993)                            4.563 4.491
 """
+
+#计算评分分歧
+#办法1加一列存放平均分差，然后排序,分歧最大且女性观众更喜欢的电影
+mean_ratings['diff'] = mean_ratings['M'] - mean_ratings['F']
+sorted_by_diff = mean_ratings.sort_index(by='diff')
+print(sorted_by_diff[::-1][:5])
+
+#只找出分歧最大的电影（不考虑性别），可计算得分数据的方差或标准差
+#根据电影分组的得分数据标准差
+rating_std_by_title = data.groupby('title')['rating'].std()
+"""
+Zeus and Roxanne (1997)                           1.122884
+eXistenZ (1999)                                   1.178568
+Name: rating, dtype: float64
+"""
+#根据active_titles 进行过滤
+rating_std_by_title = rating_std_by_title.ix[active_titles]
+#根据值对Series进行降序排列
+print(rating_std_by_title.order(ascending=False)[:10])
+"""
+Black Sunday (La Maschera Del Demonio) (1960)               1.892969
+Ballad of Narayama, The (Narayama Bushiko) (1958)           1.767767
+"""
+
