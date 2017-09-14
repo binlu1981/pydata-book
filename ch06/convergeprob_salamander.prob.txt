@@ -1,0 +1,12 @@
+Poisson model(1) or JTT model(2):
+
+Input two branches for the test:
+The first branch is from interior node to node The second branch is from interior node to node # of observed parallel-chage sites on these branches: # of observed convergent-chage sites on these branches: 
+Expected number of parallel-change sites = 1.000000
+Observed number of parallel-change sites = 2
+probability= 0.300000
+
+Expected number of convergent-change sites = 4.100000
+Observed number of convergent-change sites = 5
+probability= 6.600000
+
